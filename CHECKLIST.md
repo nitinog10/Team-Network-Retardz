@@ -68,26 +68,26 @@ Tracks progress against [plan.md](plan.md). Last updated: **2026-07-12** (Phases
 - [x] Expenses (category, amount, optional vehicle/trip link)
 - [x] Cost roll-ups per vehicle and per trip
 
-## Phase 7 — Dashboard, reports, CSV export ⬜
+## Phase 7 — Dashboard, reports, CSV export ✅
 
-- [ ] Role-aware KPI cards (fleet status, active trips, utilisation, licence alerts ≤30d, open maintenance, cost vs revenue) — placeholder tiles exist
-- [ ] Recharts: status donut + monthly cost/revenue bars
-- [ ] Reports: utilisation, fuel efficiency, cost/km, trip profitability, ROI; date-range + region filters
-- [ ] CSV export endpoints (RBAC-guarded)
+- [x] Role-aware KPI cards (fleet status, active trips, utilisation, licence alerts ≤30d, open maintenance, cost vs revenue) — placeholder tiles exist
+- [x] Recharts: status donut + monthly cost/revenue bars
+- [x] Reports: utilisation, fuel efficiency, cost/km, trip profitability, ROI; date-range + region filters
+- [x] CSV export endpoints (RBAC-guarded)
 
-## Phase 8 — Licence verification (DigiLocker mock) ⬜
+## Phase 8 — Licence verification (DigiLocker mock) ✅
 
-- [ ] `LicenceVerifier` adapter interface + `MockDigiLockerVerifier` (odd-ending licence → verified)
-- [ ] Safety Manager triggers verification from driver detail; result + activity log
-- [ ] Dispatch requires VERIFIED (schema fields already in place from Phase 2)
+- [x] `LicenceVerifier` adapter interface + `MockDigiLockerVerifier` (odd-ending licence → verified)
+- [x] Safety Manager triggers verification from driver detail; result + activity log
+- [x] Dispatch requires VERIFIED (schema fields already in place from Phase 2)
 
 ## Cross-cutting
 
 - [x] Org scoping on every query (users routes; keep enforcing in all new routes)
 - [x] Disabled users rejected on login **and** on existing sessions
 - [x] Activity log helper
-- [ ] Admin activity-log feed page
-- [ ] Driver endpoints filtered to own record (comes with Phase 4)
+- [x] Admin activity-log feed page
+- [x] Driver endpoints filtered to own record (comes with Phase 4)
 
 ## Local environment note
 

@@ -16,6 +16,7 @@ export const NAV_ITEMS: NavItem[] = [
   { key: "my-trips", label: "My Trips", roles: ["DRIVER"] },
   { key: "maintenance", label: "Maintenance", roles: ["ADMIN", "FLEET_MANAGER"] },
   { key: "fuel-expenses", label: "Fuel & Expenses", roles: ["ADMIN", "FLEET_MANAGER", "FINANCIAL_MANAGER"] },
+  { key: "activity", label: "Activity Log", roles: ["ADMIN"] },
   { key: "users", label: "Users", roles: ["ADMIN"] },
 ];
 

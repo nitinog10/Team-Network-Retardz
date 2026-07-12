@@ -139,6 +139,58 @@ export interface TripCost {
   profit: number;
 }
 
+export interface DashboardStats {
+  fleetStatus: Record<string, number>;
+  activeTrips: number;
+  totalVehicles: number;
+  utilisation: number;
+  licenceAlerts: number;
+  openMaintenance: number;
+  monthRevenue: number;
+  monthCost: number;
+  recentTrips: Array<{
+    id: string;
+    tripNumber: string;
+    source: string;
+    destination: string;
+    status: string;
+    revenue: number;
+    createdAt: string;
+    vehicle: { registrationNumber: string };
+    driver: { name: string };
+  }>;
+}
+
+export interface MonthlyData {
+  month: string;
+  revenue: number;
+  cost: number;
+}
+
+export interface ActivityLogEntry {
+  id: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  actor: { id: string; name: string; email: string; role: string };
+}
+
+export interface VerificationResponse {
+  driver: {
+    id: string;
+    name: string;
+    licenceNumber: string;
+    verificationStatus: string;
+    verifiedAt: string | null;
+  };
+  verification: {
+    status: string;
+    details: string;
+    mock: boolean;
+  };
+}
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -314,6 +366,22 @@ export const api = {
   }) => request<{ expense: Expense }>("/api/expenses", { method: "POST", body: JSON.stringify(data) }),
   vehicleCosts: () => request<{ costs: VehicleCost[] }>("/api/expenses/vehicle-costs"),
   tripCosts: () => request<{ costs: TripCost[] }>("/api/expenses/trip-costs"),
+
+  // Dashboard
+  dashboardStats: () => request<DashboardStats>("/api/dashboard/stats"),
+  dashboardMonthly: () => request<{ months: MonthlyData[] }>("/api/dashboard/monthly"),
+
+  // Verification
+  verifyDriver: (driverId: string) =>
+    request<VerificationResponse>(`/api/verification/${driverId}/verify`, { method: "POST" }),
+
+  // Activity Log
+  listActivity: (filters?: { entityType?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.entityType) params.set("entityType", filters.entityType);
+    const qs = params.toString();
+    return request<{ logs: ActivityLogEntry[] }>(`/api/activity${qs ? `?${qs}` : ""}`);
+  },
 };
 
 export const ROLES = [

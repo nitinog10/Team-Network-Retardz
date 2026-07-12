@@ -8,6 +8,7 @@ import Drivers from "./pages/Drivers";
 import Trips from "./pages/Trips";
 import Maintenance from "./pages/Maintenance";
 import FuelExpenses from "./pages/FuelExpenses";
+import ActivityLog from "./pages/ActivityLog";
 import Shell from "./components/Shell";
 
 function AppContent() {
@@ -40,6 +41,8 @@ function AppContent() {
         return <Maintenance />;
       case "fuel-expenses":
         return <FuelExpenses />;
+      case "activity":
+        return user.role === "ADMIN" ? <ActivityLog /> : <Dashboard />;
       default:
         return <Dashboard />;
     }

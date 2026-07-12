@@ -56,6 +56,7 @@ export default function Drivers() {
 
   const canWrite = user?.role === "ADMIN" || user?.role === "FLEET_MANAGER";
   const canSafety = user?.role === "ADMIN" || user?.role === "SAFETY_MANAGER";
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
 
   const load = () => {
     const filters: Record<string, string> = {};
@@ -118,6 +119,27 @@ export default function Drivers() {
       setDrivers((prev) => prev.map((d) => (d.id === id ? driver : d)));
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to update driver safety");
+    }
+  };
+
+  const handleVerify = async (id: string) => {
+    setError(null);
+    setVerifyingId(id);
+    try {
+      const { driver: updated, verification } = await api.verifyDriver(id);
+      setDrivers((prev) =>
+        prev.map((d) =>
+          d.id === id
+            ? { ...d, verificationStatus: updated.verificationStatus, verifiedAt: updated.verifiedAt ?? d.verifiedAt }
+            : d,
+        ),
+      );
+      const icon = verification.status === "VERIFIED" ? "✅" : "❌";
+      alert(`${icon} ${verification.details}`);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Verification failed");
+    } finally {
+      setVerifyingId(null);
     }
   };
 
@@ -372,6 +394,15 @@ export default function Drivers() {
                               </button>
                             ) : null}
                           </>
+                        )}
+                        {canSafety && d.verificationStatus !== "VERIFIED" && (
+                          <button
+                            onClick={() => void handleVerify(d.id)}
+                            disabled={verifyingId === d.id}
+                            className="text-xs px-2.5 py-1 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 disabled:opacity-50 transition"
+                          >
+                            {verifyingId === d.id ? "Verifying..." : "🔍 Verify (Mock)"}
+                          </button>
                         )}
                       </div>
                     </td>
