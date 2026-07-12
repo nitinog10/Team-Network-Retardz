@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AuthProvider, useAuth } from "./lib/auth";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -11,9 +11,28 @@ import FuelExpenses from "./pages/FuelExpenses";
 import ActivityLog from "./pages/ActivityLog";
 import Shell from "./components/Shell";
 
+/** Map each role to its default landing page after login */
+const ROLE_LANDING_PAGE: Record<string, string> = {
+  ADMIN: "dashboard",
+  FLEET_MANAGER: "vehicles",
+  SAFETY_MANAGER: "drivers",
+  FINANCIAL_MANAGER: "fuel-expenses",
+  DRIVER: "my-trips",
+};
+
 function AppContent() {
   const { user, loading } = useAuth();
   const [page, setPage] = useState("dashboard");
+  const prevUserRef = useRef<string | null>(null);
+
+  /* When a user logs in, redirect to their role-specific landing page */
+  useEffect(() => {
+    if (user && prevUserRef.current !== user.id) {
+      const landing = ROLE_LANDING_PAGE[user.role] ?? "dashboard";
+      setPage(landing);
+    }
+    prevUserRef.current = user?.id ?? null;
+  }, [user]);
 
   if (loading) {
     return (
