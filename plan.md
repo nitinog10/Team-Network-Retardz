@@ -137,3 +137,9 @@ Indexes: `(organisationId, status)` on vehicles/drivers/trips; unique `(organisa
 ## Suggested execution order
 
 Phases 0→2 first (foundation, auth, schema+seed), then 4 (trips) as the critical path, then 3/5/6 (masters, maintenance, money), then 7 (analytics), then 8 (verification mock) — though 8's schema fields exist from Phase 2 so dispatch gating works from day one (seed marks most drivers VERIFIED).
+
+## Expected Workflow and Documentation
+
+The expected workflow, system architecture diagrams, and UI/UX mockups are available in the accompanying Excalidraw workspace. These visual assets serve as the primary reference for the development process and should be consulted alongside this implementation plan.
+
+[View Excalidraw Workspace](https://excalidraw.com/#room=55f72ce25471afa6816e,CUleZ7rLCFM6DflFzonFrA)
