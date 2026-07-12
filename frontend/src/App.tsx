@@ -3,6 +3,9 @@ import { AuthProvider, useAuth } from "./lib/auth";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
+import Vehicles from "./pages/Vehicles";
+import Drivers from "./pages/Drivers";
+import Trips from "./pages/Trips";
 import Shell from "./components/Shell";
 
 function AppContent() {
@@ -19,9 +22,26 @@ function AppContent() {
 
   if (!user) return <Login />;
 
+  const renderPage = () => {
+    switch (page) {
+      case "users":
+        return user.role === "ADMIN" ? <Users /> : <Dashboard />;
+      case "vehicles":
+        return <Vehicles />;
+      case "drivers":
+        return <Drivers />;
+      case "trips":
+        return <Trips />;
+      case "my-trips":
+        return <Trips driverOnly />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
   return (
     <Shell page={page} onNavigate={setPage}>
-      {page === "users" && user.role === "ADMIN" ? <Users /> : <Dashboard />}
+      {renderPage()}
     </Shell>
   );
 }

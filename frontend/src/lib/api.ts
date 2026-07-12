@@ -7,6 +7,71 @@ export interface User {
   active?: boolean;
 }
 
+export interface Vehicle {
+  id: string;
+  registrationNumber: string;
+  type: string;
+  maxLoadKg: number;
+  odometerKm: number;
+  acquisitionCost: number;
+  region: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Driver {
+  id: string;
+  name: string;
+  licenceNumber: string;
+  licenceCategory: string;
+  licenceExpiry: string;
+  safetyScore: number;
+  status: string;
+  verificationStatus: string;
+  verifiedAt: string | null;
+  userId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user?: { id: string; email: string; name: string } | null;
+}
+
+export interface Trip {
+  id: string;
+  tripNumber: string;
+  source: string;
+  destination: string;
+  cargoWeightKg: number;
+  plannedDistanceKm: number;
+  actualDistanceKm: number | null;
+  finalOdometerKm: number | null;
+  revenue: number;
+  status: string;
+  dispatchedAt: string | null;
+  completedAt: string | null;
+  cancelledAt: string | null;
+  createdAt: string;
+  vehicle: { id: string; registrationNumber: string; type: string; status: string; odometerKm: number };
+  driver: { id: string; name: string; licenceNumber?: string; status: string; userId?: string | null };
+}
+
+export interface AvailableVehicle {
+  id: string;
+  registrationNumber: string;
+  type: string;
+  maxLoadKg: number;
+  region: string;
+  odometerKm: number;
+}
+
+export interface AvailableDriver {
+  id: string;
+  name: string;
+  licenceNumber: string;
+  licenceCategory: string;
+  licenceExpiry: string;
+}
+
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -29,6 +94,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
+  // Auth
   login: (email: string, password: string) =>
     request<{ user: User }>("/api/auth/login", {
       method: "POST",
@@ -36,11 +102,98 @@ export const api = {
     }),
   logout: () => request<{ ok: boolean }>("/api/auth/logout", { method: "POST" }),
   me: () => request<{ user: User }>("/api/auth/me"),
+
+  // Users
   listUsers: () => request<{ users: User[] }>("/api/users"),
   createUser: (data: { email: string; name: string; password: string; role: string }) =>
     request<{ user: User }>("/api/users", { method: "POST", body: JSON.stringify(data) }),
   updateUser: (id: string, data: { role?: string; active?: boolean; name?: string }) =>
     request<{ user: User }>(`/api/users/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+
+  // Vehicles
+  listVehicles: (filters?: { status?: string; type?: string; region?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.set("status", filters.status);
+    if (filters?.type) params.set("type", filters.type);
+    if (filters?.region) params.set("region", filters.region);
+    const qs = params.toString();
+    return request<{ vehicles: Vehicle[] }>(`/api/vehicles${qs ? `?${qs}` : ""}`);
+  },
+  getVehicle: (id: string) => request<{ vehicle: Vehicle }>(`/api/vehicles/${id}`),
+  createVehicle: (data: {
+    registrationNumber: string;
+    type: string;
+    maxLoadKg: number;
+    odometerKm?: number;
+    acquisitionCost?: number;
+    region: string;
+  }) => request<{ vehicle: Vehicle }>("/api/vehicles", { method: "POST", body: JSON.stringify(data) }),
+  updateVehicle: (id: string, data: Partial<{
+    registrationNumber: string;
+    type: string;
+    maxLoadKg: number;
+    odometerKm: number;
+    acquisitionCost: number;
+    region: string;
+  }>) => request<{ vehicle: Vehicle }>(`/api/vehicles/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  retireVehicle: (id: string) =>
+    request<{ vehicle: Vehicle }>(`/api/vehicles/${id}/retire`, { method: "POST" }),
+  availableVehicles: () => request<{ vehicles: AvailableVehicle[] }>("/api/vehicles/available"),
+
+  // Drivers
+  listDrivers: (filters?: { status?: string; verificationStatus?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.set("status", filters.status);
+    if (filters?.verificationStatus) params.set("verificationStatus", filters.verificationStatus);
+    const qs = params.toString();
+    return request<{ drivers: Driver[] }>(`/api/drivers${qs ? `?${qs}` : ""}`);
+  },
+  getDriver: (id: string) => request<{ driver: Driver }>(`/api/drivers/${id}`),
+  createDriver: (data: {
+    name: string;
+    licenceNumber: string;
+    licenceCategory: string;
+    licenceExpiry: string;
+    safetyScore?: number;
+    userId?: string;
+  }) => request<{ driver: Driver }>("/api/drivers", { method: "POST", body: JSON.stringify(data) }),
+  updateDriver: (id: string, data: Partial<{
+    name: string;
+    licenceNumber: string;
+    licenceCategory: string;
+    licenceExpiry: string;
+    userId: string | null;
+  }>) => request<{ driver: Driver }>(`/api/drivers/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  updateDriverSafety: (id: string, data: { safetyScore?: number; status?: string }) =>
+    request<{ driver: Driver }>(`/api/drivers/${id}/safety`, { method: "PATCH", body: JSON.stringify(data) }),
+  availableDrivers: () => request<{ drivers: AvailableDriver[] }>("/api/drivers/available"),
+
+  // Trips
+  listTrips: (filters?: { status?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.set("status", filters.status);
+    const qs = params.toString();
+    return request<{ trips: Trip[] }>(`/api/trips${qs ? `?${qs}` : ""}`);
+  },
+  getTrip: (id: string) => request<{ trip: Trip }>(`/api/trips/${id}`),
+  createTrip: (data: {
+    source: string;
+    destination: string;
+    vehicleId: string;
+    driverId: string;
+    cargoWeightKg: number;
+    plannedDistanceKm: number;
+    revenue: number;
+  }) => request<{ trip: Trip }>("/api/trips", { method: "POST", body: JSON.stringify(data) }),
+  dispatchTrip: (id: string) =>
+    request<{ trip: Trip }>(`/api/trips/${id}/dispatch`, { method: "POST" }),
+  completeTrip: (id: string, finalOdometerKm: number) =>
+    request<{ trip: Trip }>(`/api/trips/${id}/complete`, {
+      method: "POST",
+      body: JSON.stringify({ finalOdometerKm }),
+    }),
+  cancelTrip: (id: string) =>
+    request<{ trip: Trip }>(`/api/trips/${id}/cancel`, { method: "POST" }),
 };
 
 export const ROLES = [
@@ -58,3 +211,8 @@ export function roleLabel(role: string): string {
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 }
+
+export const VEHICLE_STATUSES = ["AVAILABLE", "ON_TRIP", "IN_SHOP", "RETIRED"] as const;
+export const DRIVER_STATUSES = ["AVAILABLE", "ON_TRIP", "OFF_DUTY", "SUSPENDED"] as const;
+export const VERIFICATION_STATUSES = ["UNVERIFIED", "PENDING", "VERIFIED", "FAILED"] as const;
+export const TRIP_STATUSES = ["DRAFT", "DISPATCHED", "COMPLETED", "CANCELLED"] as const;

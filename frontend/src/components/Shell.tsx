@@ -10,6 +10,10 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", label: "Dashboard", roles: [] },
+  { key: "vehicles", label: "Vehicles", roles: ["ADMIN", "FLEET_MANAGER", "FINANCIAL_MANAGER"] },
+  { key: "drivers", label: "Drivers", roles: ["ADMIN", "FLEET_MANAGER", "SAFETY_MANAGER"] },
+  { key: "trips", label: "Trips", roles: ["ADMIN", "FLEET_MANAGER", "SAFETY_MANAGER", "FINANCIAL_MANAGER"] },
+  { key: "my-trips", label: "My Trips", roles: ["DRIVER"] },
   { key: "users", label: "Users", roles: ["ADMIN"] },
 ];
 
@@ -55,7 +59,7 @@ export default function Shell({ page, onNavigate, children }: ShellProps) {
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
-          <div className="font-semibold text-slate-700 capitalize">{page}</div>
+          <div className="font-semibold text-slate-700 capitalize">{page.replace("-", " ")}</div>
           <div className="flex items-center gap-4">
             <div className="text-right">
               <div className="text-sm font-medium text-slate-800">{user.name}</div>

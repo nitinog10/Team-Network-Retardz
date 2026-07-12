@@ -35,26 +35,26 @@ Tracks progress against [plan.md](plan.md). Last updated: **2026-07-12** (Phases
 - [x] Seed: demo org, one user per role (`Demo@123`), 8 vehicles, 6 drivers (one expired licence, one suspended, one unverified), trips in every status, ~3 months of maintenance/fuel/expense history
 - [x] `logActivity()` helper (`backend/src/services/activity.ts`) — used by user routes; wire into every future mutating service
 
-## Phase 3 — Vehicle and Driver management ⬜
+## Phase 3 — Vehicle and Driver management ✅
 
-- [ ] Vehicles API: list (filters: status/type/region), create, edit, detail
-- [ ] Vehicle Retire action (blocked while ON_TRIP or IN_SHOP with open work)
-- [ ] Drivers API: list, create, edit, detail; licence-expiry + verification badges
-- [ ] Safety Manager: set safety score, suspend/reinstate, toggle Off Duty
-- [ ] Link driver to Driver-role user account
-- [ ] Frontend pages: vehicle list/form/detail, driver list/form/detail
-- [ ] Zod validation + RBAC + activity log on all writes
+- [x] Vehicles API: list (filters: status/type/region), create, edit, detail
+- [x] Vehicle Retire action (blocked while ON_TRIP or IN_SHOP with open work)
+- [x] Drivers API: list, create, edit, detail; licence-expiry + verification badges
+- [x] Safety Manager: set safety score, suspend/reinstate, toggle Off Duty
+- [x] Link driver to Driver-role user account
+- [x] Frontend pages: vehicle list/form/detail, driver list/form/detail
+- [x] Zod validation + RBAC + activity log on all writes
 
-## Phase 4 — Trip workflow (critical path) ⬜
+## Phase 4 — Trip workflow (critical path) ✅
 
-- [ ] `services/trips.ts` — all status transitions server-side only
-- [ ] Draft: create trip; eligible-only vehicle/driver pickers (UX)
-- [ ] Dispatch: single transaction, `SELECT ... FOR UPDATE` locks, full server-side revalidation (vehicle AVAILABLE, driver AVAILABLE + verified + licence valid, cargo ≤ maxLoadKg, org match)
-- [ ] Complete: final odometer ≥ current, compute `actualDistanceKm`, update vehicle odometer, free vehicle + driver
-- [ ] Cancel: from DRAFT or DISPATCHED, frees resources
-- [ ] Trip list + detail (timeline, linked fuel/expenses)
-- [ ] Driver portal `/my-trips` — scoped to `trip.driver.userId = session.userId` in every query
-- [ ] Vitest: dispatch validation matrix, double-dispatch race, odometer math, illegal transitions
+- [x] `services/trips.ts` — all status transitions server-side only
+- [x] Draft: create trip; eligible-only vehicle/driver pickers (UX)
+- [x] Dispatch: single transaction, `SELECT ... FOR UPDATE` locks, full server-side revalidation (vehicle AVAILABLE, driver AVAILABLE + verified + licence valid, cargo ≤ maxLoadKg, org match)
+- [x] Complete: final odometer ≥ current, compute `actualDistanceKm`, update vehicle odometer, free vehicle + driver
+- [x] Cancel: from DRAFT or DISPATCHED, frees resources
+- [x] Trip list + detail (timeline, linked fuel/expenses)
+- [x] Driver portal `/my-trips` — scoped to `trip.driver.userId = session.userId` in every query
+- [x] Vitest: dispatch validation matrix, double-dispatch race, odometer math, illegal transitions
 
 ## Phase 5 — Maintenance ⬜
 
