@@ -73,13 +73,21 @@ export default function Trips({ driverOnly = false }: TripsProps) {
       const [v, d] = await Promise.all([api.availableVehicles(), api.availableDrivers()]);
       setAvailableVehicles(v.vehicles);
       setAvailableDrivers(d.drivers);
-    } catch {
-      // pickers may fail for DRIVER role — that's fine
+      if (v.vehicles.length === 0 && d.drivers.length === 0) {
+        setError("No available vehicles or drivers found. Ensure vehicles are AVAILABLE and drivers are AVAILABLE + VERIFIED with valid licences.");
+      } else if (v.vehicles.length === 0) {
+        setError("No available vehicles found. All vehicles may be on trips, in maintenance, or retired.");
+      } else if (d.drivers.length === 0) {
+        setError("No available drivers found. Drivers must be AVAILABLE, VERIFIED, and have a valid licence to be eligible.");
+      }
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Failed to load available vehicles/drivers");
     }
   };
 
   const openCreate = async () => {
     setForm(emptyForm);
+    setError(null);
     await loadPickers();
     setShowForm(true);
   };

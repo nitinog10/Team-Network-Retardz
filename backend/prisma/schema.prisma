@@ -82,8 +82,10 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  organisation Organisation @relation(fields: [organisationId], references: [id])
-  driver       Driver?
+  organisation   Organisation   @relation(fields: [organisationId], references: [id])
+  driver         Driver?
+  activityLogs   ActivityLog[]
+  notifications  Notification[]
 
   @@index([organisationId, role])
 }
@@ -158,6 +160,7 @@ model Trip {
   driver       Driver       @relation(fields: [driverId], references: [id])
   fuelLogs     FuelLog[]
   expenses     Expense[]
+  notifications Notification[]
 
   @@unique([organisationId, tripNumber])
   @@index([organisationId, status])
@@ -224,6 +227,22 @@ model ActivityLog {
   createdAt      DateTime @default(now())
 
   organisation Organisation @relation(fields: [organisationId], references: [id])
+  actor        User         @relation(fields: [actorId], references: [id])
 
   @@index([organisationId, entityType, entityId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  tripId    String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  trip Trip? @relation(fields: [tripId], references: [id])
+
+  @@index([userId, read])
 }

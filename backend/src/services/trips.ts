@@ -155,6 +155,27 @@ export async function dispatchTrip(actor: AuthedUser, tripId: string) {
       },
     });
 
+    // Notify the driver's linked user account about the trip assignment
+    const driverRecord = await tx.driver.findUnique({
+      where: { id: driver.id },
+      select: { userId: true, name: true },
+    });
+
+    if (driverRecord?.userId) {
+      const tripData = await tx.trip.findUnique({
+        where: { id: tripId },
+        select: { tripNumber: true, source: true, destination: true },
+      });
+      await tx.notification.create({
+        data: {
+          userId: driverRecord.userId,
+          title: "New Trip Assigned",
+          message: `You have been assigned to trip ${tripData?.tripNumber ?? ""}: ${tripData?.source ?? ""} → ${tripData?.destination ?? ""}`,
+          tripId,
+        },
+      });
+    }
+
     return tx.trip.findUnique({
       where: { id: tripId },
       include: {

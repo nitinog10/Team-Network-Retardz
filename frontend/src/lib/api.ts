@@ -191,6 +191,15 @@ export interface VerificationResponse {
     mock: boolean;
   };
 }
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  read: boolean;
+  tripId: string | null;
+  createdAt: string;
+}
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -382,6 +391,14 @@ export const api = {
     const qs = params.toString();
     return request<{ logs: ActivityLogEntry[] }>(`/api/activity${qs ? `?${qs}` : ""}`);
   },
+
+  // Notifications
+  listNotifications: () =>
+    request<{ notifications: Notification[]; unreadCount: number }>("/api/notifications"),
+  markNotificationRead: (id: string) =>
+    request<{ ok: boolean }>(`/api/notifications/${id}/read`, { method: "POST" }),
+  markAllNotificationsRead: () =>
+    request<{ ok: boolean }>("/api/notifications/read-all", { method: "POST" }),
 };
 
 export const ROLES = [

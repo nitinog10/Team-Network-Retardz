@@ -11,6 +11,7 @@ import { fuelRouter, expensesRouter } from "./routes/finance.js";
 import { dashboardRouter } from "./routes/dashboard.js";
 import { verificationRouter } from "./routes/verification.js";
 import { activityRouter } from "./routes/activity.js";
+import { notificationsRouter } from "./routes/notifications.js";
 
 export function createApp() {
   const app = express();
@@ -33,6 +34,7 @@ export function createApp() {
   app.use("/api/dashboard", dashboardRouter);
   app.use("/api/verification", verificationRouter);
   app.use("/api/activity", activityRouter);
+  app.use("/api/notifications", notificationsRouter);
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Not found" });
