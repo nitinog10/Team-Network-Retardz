@@ -6,36 +6,49 @@ TransitOps is a role-based fleet operations platform (Odoo Hackathon 2026, team 
 
 Source of truth for domain rules: `architecture.md` (roles, status models, dispatch validation, maintenance workflow).
 
-## Stack (decided)
+## Stack (decided — revised 2026-07-12)
+
+> **Revision:** the frontend was initialized as a **Vite + React SPA** (`frontend/`), not Next.js. The backend is therefore a **standalone Express + TypeScript REST API** in `backend/`. Domain plan (phases, rules, schema) below is unchanged; "server actions" become REST endpoints.
 
 | Layer | Choice |
 | --- | --- |
-| App | Next.js (App Router) + TypeScript |
-| UI | Tailwind CSS + small reusable component set |
+| Frontend | Vite + React 19 + TypeScript (`frontend/`, dev on :5173) |
+| Backend | Express 5 + TypeScript (`backend/`, dev on :4000, all routes under `/api`) |
 | Database | **MySQL 8 (locally installed)** via Prisma ORM |
-| Auth | Custom credentials: bcrypt hashes, signed `httpOnly` session cookie (jose HS256), middleware guard |
-| Validation | Zod schemas shared client/server |
+| Auth | Custom credentials: bcrypt hashes, signed `httpOnly` session cookie (jose HS256), auth middleware |
+| Validation | Zod schemas server-side (frontend re-uses shapes as needed) |
 | Charts | Recharts |
 | Tests | Vitest for core logic only (dispatch validation, status transitions, RBAC) |
 
-`DATABASE_URL="mysql://root:<password>@localhost:3306/transitops"` in `.env` (documented in `.env.example`, never committed with real values). Prisma migrations create the `transitops` database schema; README documents `CREATE DATABASE transitops;` as the one manual MySQL step.
+Frontend↔backend integration: Vite dev server proxies `/api` → `http://localhost:4000`, so the SPA and API are same-origin in the browser and the session cookie needs no CORS/third-party handling.
+
+`DATABASE_URL="mysql://root:<password>@localhost:3306/transitops"` in `backend/.env` (documented in `.env.example`, never committed with real values). Prisma migrations create the `transitops` database schema; README documents `CREATE DATABASE transitops;` as the one manual MySQL step.
 
 ## Project layout
 
 ```
-src/
-  app/
-    (auth)/login/                      # public
-    (app)/dashboard|vehicles|drivers|trips|maintenance|fuel|expenses|reports|admin/users/
-    (app)/my-trips/                    # driver portal
-    api/...                            # route handlers where needed (CSV export, mock verifier)
-  lib/auth/        session.ts, password.ts, rbac.ts (role→permission map)
-  lib/db.ts        Prisma client singleton
-  lib/services/    trips.ts, maintenance.ts, verification/ (adapter + mock)
-  lib/validation/  zod schemas per entity
-  components/      shell, tables, forms, badges, charts, empty/loading/error states
-prisma/            schema.prisma, migrations/, seed.ts
+frontend/            # Vite + React SPA (login page, app shell, feature pages)
+backend/
+  prisma/            schema.prisma, migrations/, seed.ts
+  src/
+    index.ts         # server bootstrap
+    app.ts           # express app (routes, cookie parsing, error handler)
+    config/env.ts    # Zod-validated env
+    lib/db.ts        # Prisma client singleton
+    lib/auth/        # password.ts, session.ts, rbac.ts (role→permission map)
+    middleware/      # requireAuth, requirePermission
+    routes/          # auth.ts, users.ts, vehicles.ts, drivers.ts, trips.ts, ...
+    services/        # trips.ts, maintenance.ts, verification/ (adapter + mock)
+    validation/      # zod schemas per entity
 ```
+
+### Backend API surface for Phase 1 (auth)
+
+- `POST /api/auth/login` — email+password → sets session cookie, returns `{user}`
+- `POST /api/auth/logout` — clears cookie
+- `GET  /api/auth/me` — current user or 401
+- `GET  /api/users` · `POST /api/users` · `PATCH /api/users/:id` (role, active) — Admin only
+- Middleware: `requireAuth` (verifies JWT **and** re-checks `active` in DB each request), `requirePermission(resource, action)` backed by a single `PERMISSIONS` map
 
 ---
 
