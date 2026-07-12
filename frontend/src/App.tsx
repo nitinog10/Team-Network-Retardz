@@ -6,6 +6,8 @@ import Users from "./pages/Users";
 import Vehicles from "./pages/Vehicles";
 import Drivers from "./pages/Drivers";
 import Trips from "./pages/Trips";
+import Maintenance from "./pages/Maintenance";
+import FuelExpenses from "./pages/FuelExpenses";
 import Shell from "./components/Shell";
 
 function AppContent() {
@@ -34,6 +36,10 @@ function AppContent() {
         return <Trips />;
       case "my-trips":
         return <Trips driverOnly />;
+      case "maintenance":
+        return <Maintenance />;
+      case "fuel-expenses":
+        return <FuelExpenses />;
       default:
         return <Dashboard />;
     }

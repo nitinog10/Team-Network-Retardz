@@ -72,6 +72,73 @@ export interface AvailableDriver {
   licenceExpiry: string;
 }
 
+export interface MaintenanceLog {
+  id: string;
+  vehicleId: string;
+  description: string;
+  status: string;
+  cost: number;
+  openedAt: string;
+  closedAt: string | null;
+  vehicle: { id: string; registrationNumber: string; type: string; status: string };
+}
+
+export interface FuelLog {
+  id: string;
+  vehicleId: string;
+  tripId: string | null;
+  litres: number;
+  cost: number;
+  odometerKm: number;
+  loggedAt: string;
+  vehicle: { id: string; registrationNumber: string; type: string };
+  trip: { id: string; tripNumber: string } | null;
+}
+
+export interface Expense {
+  id: string;
+  vehicleId: string | null;
+  tripId: string | null;
+  category: string;
+  amount: number;
+  notes: string | null;
+  incurredAt: string;
+  vehicle: { id: string; registrationNumber: string; type: string } | null;
+  trip: { id: string; tripNumber: string } | null;
+}
+
+export interface FuelEfficiency {
+  vehicleId: string;
+  registrationNumber: string;
+  type: string;
+  totalLitres: number;
+  distanceKm: number;
+  kmPerLitre: number | null;
+}
+
+export interface VehicleCost {
+  vehicleId: string;
+  registrationNumber: string;
+  type: string;
+  maintenanceCost: number;
+  fuelCost: number;
+  expenseCost: number;
+  totalCost: number;
+}
+
+export interface TripCost {
+  tripId: string;
+  tripNumber: string;
+  source: string;
+  destination: string;
+  status: string;
+  revenue: number;
+  fuelCost: number;
+  expenseCost: number;
+  totalCost: number;
+  profit: number;
+}
+
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -194,6 +261,59 @@ export const api = {
     }),
   cancelTrip: (id: string) =>
     request<{ trip: Trip }>(`/api/trips/${id}/cancel`, { method: "POST" }),
+
+  // Maintenance
+  listMaintenance: (filters?: { status?: string; vehicleId?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.set("status", filters.status);
+    if (filters?.vehicleId) params.set("vehicleId", filters.vehicleId);
+    const qs = params.toString();
+    return request<{ logs: MaintenanceLog[] }>(`/api/maintenance${qs ? `?${qs}` : ""}`);
+  },
+  openMaintenance: (data: { vehicleId: string; description: string }) =>
+    request<{ log: MaintenanceLog }>("/api/maintenance", { method: "POST", body: JSON.stringify(data) }),
+  closeMaintenance: (id: string, cost: number) =>
+    request<{ log: MaintenanceLog }>(`/api/maintenance/${id}/close`, {
+      method: "POST",
+      body: JSON.stringify({ cost }),
+    }),
+
+  // Fuel
+  listFuel: (filters?: { vehicleId?: string; tripId?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.vehicleId) params.set("vehicleId", filters.vehicleId);
+    if (filters?.tripId) params.set("tripId", filters.tripId);
+    const qs = params.toString();
+    return request<{ logs: FuelLog[] }>(`/api/fuel${qs ? `?${qs}` : ""}`);
+  },
+  createFuel: (data: {
+    vehicleId: string;
+    tripId?: string;
+    litres: number;
+    cost: number;
+    odometerKm: number;
+  }) => request<{ log: FuelLog }>("/api/fuel", { method: "POST", body: JSON.stringify(data) }),
+  fuelEfficiency: () => request<{ efficiency: FuelEfficiency[] }>("/api/fuel/efficiency"),
+
+  // Expenses
+  listExpenses: (filters?: { vehicleId?: string; tripId?: string; category?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.vehicleId) params.set("vehicleId", filters.vehicleId);
+    if (filters?.tripId) params.set("tripId", filters.tripId);
+    if (filters?.category) params.set("category", filters.category);
+    const qs = params.toString();
+    return request<{ expenses: Expense[] }>(`/api/expenses${qs ? `?${qs}` : ""}`);
+  },
+  createExpense: (data: {
+    vehicleId?: string;
+    tripId?: string;
+    category: string;
+    amount: number;
+    notes?: string;
+    incurredAt?: string;
+  }) => request<{ expense: Expense }>("/api/expenses", { method: "POST", body: JSON.stringify(data) }),
+  vehicleCosts: () => request<{ costs: VehicleCost[] }>("/api/expenses/vehicle-costs"),
+  tripCosts: () => request<{ costs: TripCost[] }>("/api/expenses/trip-costs"),
 };
 
 export const ROLES = [
@@ -216,3 +336,5 @@ export const VEHICLE_STATUSES = ["AVAILABLE", "ON_TRIP", "IN_SHOP", "RETIRED"] a
 export const DRIVER_STATUSES = ["AVAILABLE", "ON_TRIP", "OFF_DUTY", "SUSPENDED"] as const;
 export const VERIFICATION_STATUSES = ["UNVERIFIED", "PENDING", "VERIFIED", "FAILED"] as const;
 export const TRIP_STATUSES = ["DRAFT", "DISPATCHED", "COMPLETED", "CANCELLED"] as const;
+export const MAINTENANCE_STATUSES = ["OPEN", "CLOSED"] as const;
+export const EXPENSE_CATEGORIES = ["FUEL", "TOLL", "REPAIR", "PERMIT", "OTHER"] as const;

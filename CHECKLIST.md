@@ -56,17 +56,17 @@ Tracks progress against [plan.md](plan.md). Last updated: **2026-07-12** (Phases
 - [x] Driver portal `/my-trips` — scoped to `trip.driver.userId = session.userId` in every query
 - [x] Vitest: dispatch validation matrix, double-dispatch race, odometer math, illegal transitions
 
-## Phase 5 — Maintenance ⬜
+## Phase 5 — Maintenance ✅
 
-- [ ] Open log → vehicle IN_SHOP (rejected if ON_TRIP), close with cost → back to AVAILABLE
-- [ ] IN_SHOP vehicles excluded from dispatch
-- [ ] List with open/closed filter + per-vehicle history
+- [x] Open log → vehicle IN_SHOP (rejected if ON_TRIP), close with cost → back to AVAILABLE
+- [x] IN_SHOP vehicles excluded from dispatch
+- [x] List with open/closed filter + per-vehicle history
 
-## Phase 6 — Fuel and expenses ⬜
+## Phase 6 — Fuel and expenses ✅
 
-- [ ] Fuel logs (litres, cost, odometer, optional trip); per-vehicle km/l
-- [ ] Expenses (category, amount, optional vehicle/trip link)
-- [ ] Cost roll-ups per vehicle and per trip
+- [x] Fuel logs (litres, cost, odometer, optional trip); per-vehicle km/l
+- [x] Expenses (category, amount, optional vehicle/trip link)
+- [x] Cost roll-ups per vehicle and per trip
 
 ## Phase 7 — Dashboard, reports, CSV export ⬜
 

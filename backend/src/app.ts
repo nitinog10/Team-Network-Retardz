@@ -6,6 +6,8 @@ import { usersRouter } from "./routes/users.js";
 import { vehiclesRouter } from "./routes/vehicles.js";
 import { driversRouter } from "./routes/drivers.js";
 import { tripsRouter } from "./routes/trips.js";
+import { maintenanceRouter } from "./routes/maintenance.js";
+import { fuelRouter, expensesRouter } from "./routes/finance.js";
 
 export function createApp() {
   const app = express();
@@ -22,6 +24,9 @@ export function createApp() {
   app.use("/api/vehicles", vehiclesRouter);
   app.use("/api/drivers", driversRouter);
   app.use("/api/trips", tripsRouter);
+  app.use("/api/maintenance", maintenanceRouter);
+  app.use("/api/fuel", fuelRouter);
+  app.use("/api/expenses", expensesRouter);
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Not found" });
