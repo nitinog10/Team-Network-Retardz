@@ -148,7 +148,7 @@ export default function Drivers() {
   return (
     <div className="space-y-6">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <p className="alert-error">
           {error}
         </p>
       )}
@@ -158,7 +158,7 @@ export default function Drivers() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Statuses</option>
           {DRIVER_STATUSES.map((s) => (
@@ -168,7 +168,7 @@ export default function Drivers() {
         <select
           value={filterVerification}
           onChange={(e) => setFilterVerification(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Verification</option>
           {VERIFICATION_STATUSES.map((s) => (
@@ -183,7 +183,7 @@ export default function Drivers() {
               setEditingId(null);
               setShowForm(!showForm);
             }}
-            className="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition"
+            className="ml-auto btn-primary"
           >
             {showForm ? "Cancel" : "+ Add Driver"}
           </button>
@@ -192,8 +192,8 @@ export default function Drivers() {
 
       {/* Create / Edit form */}
       {showForm && canWrite && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">
+        <div className="card p-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">
             {editingId ? "Edit Driver" : "Add Driver"}
           </h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -202,19 +202,19 @@ export default function Drivers() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <input
               placeholder="Licence Number"
               value={form.licenceNumber}
               onChange={(e) => setForm({ ...form, licenceNumber: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <select
               value={form.licenceCategory}
               onChange={(e) => setForm({ ...form, licenceCategory: e.target.value })}
-              className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             >
               {LICENCE_CATEGORIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -227,7 +227,7 @@ export default function Drivers() {
                 value={form.licenceExpiry}
                 onChange={(e) => setForm({ ...form, licenceExpiry: e.target.value })}
                 required
-                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+                className="input"
               />
             </div>
             {!editingId && (
@@ -239,7 +239,7 @@ export default function Drivers() {
                   onChange={(e) => setForm({ ...form, safetyScore: Number(e.target.value) })}
                   min={0}
                   max={100}
-                  className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="input"
                 />
               </div>
             )}
@@ -247,7 +247,7 @@ export default function Drivers() {
               <button
                 type="submit"
                 disabled={creating}
-                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg px-5 py-2 font-medium transition"
+                className="btn-primary"
               >
                 {creating ? "Saving..." : editingId ? "Update" : "Add"}
               </button>
@@ -255,7 +255,7 @@ export default function Drivers() {
                 <button
                   type="button"
                   onClick={() => { setEditingId(null); setForm(emptyForm); setShowForm(false); }}
-                  className="text-slate-600 hover:bg-slate-100 rounded-lg px-4 py-2 transition"
+                  className="btn-ghost"
                 >
                   Cancel
                 </button>
@@ -266,11 +266,11 @@ export default function Drivers() {
       )}
 
       {/* Driver list */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-6 py-3 font-medium">Name</th>
                 <th className="px-6 py-3 font-medium">Licence</th>
                 <th className="px-6 py-3 font-medium">Category</th>
@@ -292,7 +292,7 @@ export default function Drivers() {
               {drivers.map((d) => {
                 const expiry = isExpiringSoon(d.licenceExpiry);
                 return (
-                  <tr key={d.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                  <tr key={d.id} className="trow">
                     <td className="px-6 py-3 font-medium text-slate-800">
                       {d.name}
                       {d.user && (
@@ -325,14 +325,14 @@ export default function Drivers() {
                           <div className="flex gap-1">
                             <button
                               onClick={() => void handleSafety(d.id, { safetyScore: Math.min(100, d.safetyScore + 5) })}
-                              className="text-xs px-1.5 py-0.5 rounded border border-green-200 text-green-600 hover:bg-green-50"
+                              className="btn-ghost text-xs px-1.5 py-0.5 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
                               title="+5"
                             >
                               +
                             </button>
                             <button
                               onClick={() => void handleSafety(d.id, { safetyScore: Math.max(0, d.safetyScore - 5) })}
-                              className="text-xs px-1.5 py-0.5 rounded border border-red-200 text-red-600 hover:bg-red-50"
+                              className="btn-ghost-red text-xs px-1.5 py-0.5"
                               title="-5"
                             >
                               −
@@ -356,7 +356,7 @@ export default function Drivers() {
                         {canWrite && (
                           <button
                             onClick={() => startEdit(d)}
-                            className="text-xs px-2.5 py-1 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 transition"
+                            className="btn-ghost text-xs px-2.5 py-1"
                           >
                             Edit
                           </button>
@@ -366,7 +366,7 @@ export default function Drivers() {
                             {d.status === "SUSPENDED" ? (
                               <button
                                 onClick={() => void handleSafety(d.id, { status: "AVAILABLE" })}
-                                className="text-xs px-2.5 py-1 rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition"
+                                className="btn-ghost text-xs px-2.5 py-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-800"
                               >
                                 Reinstate
                               </button>
@@ -374,13 +374,13 @@ export default function Drivers() {
                               <>
                                 <button
                                   onClick={() => void handleSafety(d.id, { status: "SUSPENDED" })}
-                                  className="text-xs px-2.5 py-1 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition"
+                                  className="btn-ghost-red text-xs px-2.5 py-1"
                                 >
                                   Suspend
                                 </button>
                                 <button
                                   onClick={() => void handleSafety(d.id, { status: "OFF_DUTY" })}
-                                  className="text-xs px-2.5 py-1 rounded-lg border border-amber-200 text-amber-600 hover:bg-amber-50 transition"
+                                  className="btn-ghost text-xs px-2.5 py-1 border-amber-200 text-amber-700 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-800"
                                 >
                                   Off Duty
                                 </button>
@@ -388,7 +388,7 @@ export default function Drivers() {
                             ) : d.status === "OFF_DUTY" ? (
                               <button
                                 onClick={() => void handleSafety(d.id, { status: "AVAILABLE" })}
-                                className="text-xs px-2.5 py-1 rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition"
+                                className="btn-ghost text-xs px-2.5 py-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-800"
                               >
                                 Set Available
                               </button>
@@ -399,7 +399,7 @@ export default function Drivers() {
                           <button
                             onClick={() => void handleVerify(d.id)}
                             disabled={verifyingId === d.id}
-                            className="text-xs px-2.5 py-1 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 disabled:opacity-50 transition"
+                            className="btn-ghost text-xs px-2.5 py-1 border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-700"
                           >
                             {verifyingId === d.id ? "Verifying..." : "🔍 Verify (Mock)"}
                           </button>

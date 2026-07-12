@@ -33,58 +33,71 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-blue-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">TransitOps</h1>
-          <p className="text-gray-500 mt-2">Sign in to your fleet dashboard</p>
+    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 px-4 relative overflow-hidden">
+      {/* Subtle dot-grid backdrop */}
+      <div
+        className="absolute inset-0 opacity-[0.5]"
+        style={{
+          backgroundImage: "radial-gradient(circle, #d4d4d8 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+          maskImage: "radial-gradient(ellipse 60% 60% at 50% 40%, black, transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 60% 60% at 50% 40%, black, transparent)",
+        }}
+      />
+
+      <div className="relative w-full max-w-sm">
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/25 mb-4">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <path d="M5 17l4-12 3 8 3-5 4 9" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-semibold tracking-tight text-slate-900">Sign in to TransitOps</h1>
+          <p className="text-sm text-slate-500 mt-1">Your fleet, in one place.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
-          </div>
+        <div className="card p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@company.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="input w-full"
+              />
+            </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
-          </div>
+            <div>
+              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={handleChange}
+                required
+                className="input w-full"
+              />
+            </div>
 
-          {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-              {error}
-            </p>
-          )}
+            {error && <p className="alert-error">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white py-3 rounded-lg font-semibold transition duration-300"
-          >
-            {submitting ? "Signing in..." : "Login"}
-          </button>
-        </form>
+            <button type="submit" disabled={submitting} className="btn-primary w-full py-2.5">
+              {submitting ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+        </div>
 
-        <p className="mt-6 text-center text-sm text-gray-400">
-          Demo: admin@transitops.local / Demo@123
-        </p>
+        <div className="mt-4 text-center">
+          <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 bg-white border border-slate-200 rounded-full px-3 py-1.5 shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            Demo: admin@transitops.local / Demo@123
+          </span>
+        </div>
       </div>
     </div>
   );

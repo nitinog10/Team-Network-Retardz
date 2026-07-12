@@ -44,14 +44,14 @@ export default function ActivityLog() {
   return (
     <div className="space-y-6">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>
+        <p className="alert-error">{error}</p>
       )}
 
       <div className="flex items-center gap-3">
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Entities</option>
           {ENTITY_TYPES.map((t) => (
@@ -61,11 +61,11 @@ export default function ActivityLog() {
         <span className="text-sm text-slate-500">{logs.length} entries</span>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-5 py-3 font-medium">Time</th>
                 <th className="px-5 py-3 font-medium">Actor</th>
                 <th className="px-5 py-3 font-medium">Entity</th>
@@ -78,7 +78,7 @@ export default function ActivityLog() {
                 <tr><td colSpan={5} className="px-5 py-8 text-center text-slate-400">No activity</td></tr>
               )}
               {logs.map((l) => (
-                <tr key={l.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                <tr key={l.id} className="trow">
                   <td className="px-5 py-3 text-xs text-slate-500 whitespace-nowrap">{formatDate(l.createdAt)}</td>
                   <td className="px-5 py-3">
                     <div className="font-medium text-slate-800 text-xs">{l.actor.name}</div>

@@ -54,20 +54,20 @@ export default function Users() {
   return (
     <div className="space-y-6">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <p className="alert-error">
           {error}
         </p>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <h3 className="font-semibold text-slate-800 mb-4">Add user</h3>
+      <div className="card p-6">
+        <h3 className="text-sm font-semibold text-slate-900 mb-4">Add user</h3>
         <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <input
             placeholder="Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
-            className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+            className="input"
           />
           <input
             type="email"
@@ -75,7 +75,7 @@ export default function Users() {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
-            className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+            className="input"
           />
           <input
             type="password"
@@ -84,12 +84,12 @@ export default function Users() {
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
             minLength={8}
-            className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+            className="input"
           />
           <select
             value={form.role}
             onChange={(e) => setForm({ ...form, role: e.target.value })}
-            className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            className="input bg-white"
           >
             {ROLES.map((r) => (
               <option key={r} value={r}>
@@ -100,18 +100,18 @@ export default function Users() {
           <button
             type="submit"
             disabled={creating}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg px-4 py-2 font-medium transition"
+            className="btn-primary"
           >
             {creating ? "Adding..." : "Add"}
           </button>
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-6 py-3 font-medium">Name</th>
                 <th className="px-6 py-3 font-medium">Email</th>
                 <th className="px-6 py-3 font-medium">Role</th>
@@ -131,7 +131,7 @@ export default function Users() {
                     <select
                       value={u.role}
                       onChange={(e) => void patchUser(u.id, { role: e.target.value })}
-                      className="rounded-lg border border-gray-300 px-2 py-1 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="input px-2 py-1"
                     >
                       {ROLES.map((r) => (
                         <option key={r} value={r}>
@@ -155,7 +155,7 @@ export default function Users() {
                     <button
                       onClick={() => void patchUser(u.id, { active: !u.active })}
                       disabled={u.id === me?.id}
-                      className="text-sm px-3 py-1 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-40 transition"
+                      className="btn-ghost"
                     >
                       {u.active ? "Disable" : "Enable"}
                     </button>

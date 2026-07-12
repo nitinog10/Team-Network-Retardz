@@ -108,7 +108,7 @@ export default function Vehicles() {
   return (
     <div className="space-y-6">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <p className="alert-error">
           {error}
         </p>
       )}
@@ -118,7 +118,7 @@ export default function Vehicles() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Statuses</option>
           {VEHICLE_STATUSES.map((s) => (
@@ -128,7 +128,7 @@ export default function Vehicles() {
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Types</option>
           {VEHICLE_TYPES.map((t) => (
@@ -138,7 +138,7 @@ export default function Vehicles() {
         <select
           value={filterRegion}
           onChange={(e) => setFilterRegion(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Regions</option>
           {REGIONS.map((r) => (
@@ -153,7 +153,7 @@ export default function Vehicles() {
               setEditingId(null);
               setShowForm(!showForm);
             }}
-            className="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition"
+            className="ml-auto btn-primary"
           >
             {showForm ? "Cancel" : "+ Add Vehicle"}
           </button>
@@ -162,8 +162,8 @@ export default function Vehicles() {
 
       {/* Create / Edit form */}
       {showForm && canWrite && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">
+        <div className="card p-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">
             {editingId ? "Edit Vehicle" : "Add Vehicle"}
           </h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -172,12 +172,12 @@ export default function Vehicles() {
               value={form.registrationNumber}
               onChange={(e) => setForm({ ...form, registrationNumber: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <select
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             >
               {VEHICLE_TYPES.map((t) => (
                 <option key={t} value={t}>{t}</option>
@@ -190,7 +190,7 @@ export default function Vehicles() {
               onChange={(e) => setForm({ ...form, maxLoadKg: Number(e.target.value) })}
               required
               min={1}
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <input
               type="number"
@@ -198,7 +198,7 @@ export default function Vehicles() {
               value={form.odometerKm || ""}
               onChange={(e) => setForm({ ...form, odometerKm: Number(e.target.value) })}
               min={0}
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <input
               type="number"
@@ -206,13 +206,13 @@ export default function Vehicles() {
               value={form.acquisitionCost || ""}
               onChange={(e) => setForm({ ...form, acquisitionCost: Number(e.target.value) })}
               min={0}
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <select
               value={form.region}
               onChange={(e) => setForm({ ...form, region: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             >
               <option value="">Select Region</option>
               {REGIONS.map((r) => (
@@ -223,7 +223,7 @@ export default function Vehicles() {
               <button
                 type="submit"
                 disabled={creating}
-                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg px-5 py-2 font-medium transition"
+                className="btn-primary"
               >
                 {creating ? "Saving..." : editingId ? "Update" : "Add"}
               </button>
@@ -231,7 +231,7 @@ export default function Vehicles() {
                 <button
                   type="button"
                   onClick={() => { setEditingId(null); setForm(emptyForm); setShowForm(false); }}
-                  className="text-slate-600 hover:bg-slate-100 rounded-lg px-4 py-2 transition"
+                  className="btn-ghost"
                 >
                   Cancel
                 </button>
@@ -242,11 +242,11 @@ export default function Vehicles() {
       )}
 
       {/* Vehicle list */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-6 py-3 font-medium">Reg. Number</th>
                 <th className="px-6 py-3 font-medium">Type</th>
                 <th className="px-6 py-3 font-medium">Region</th>
@@ -265,7 +265,7 @@ export default function Vehicles() {
                 </tr>
               )}
               {vehicles.map((v) => (
-                <tr key={v.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                <tr key={v.id} className="trow">
                   <td className="px-6 py-3 font-medium text-slate-800">{v.registrationNumber}</td>
                   <td className="px-6 py-3 text-slate-600">{v.type}</td>
                   <td className="px-6 py-3 text-slate-600">{v.region}</td>
@@ -282,7 +282,7 @@ export default function Vehicles() {
                         <button
                           onClick={() => startEdit(v)}
                           disabled={v.status === "RETIRED"}
-                          className="text-sm px-3 py-1 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-40 transition"
+                          className="btn-ghost"
                         >
                           Edit
                         </button>
@@ -290,7 +290,7 @@ export default function Vehicles() {
                           <button
                             onClick={() => void handleRetire(v.id)}
                             disabled={v.status === "ON_TRIP"}
-                            className="text-sm px-3 py-1 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-40 transition"
+                            className="btn-ghost-red"
                           >
                             Retire
                           </button>

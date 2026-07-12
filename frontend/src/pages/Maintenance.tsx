@@ -106,7 +106,7 @@ export default function Maintenance() {
   return (
     <div className="space-y-6">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <p className="alert-error">
           {error}
         </p>
       )}
@@ -116,7 +116,7 @@ export default function Maintenance() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Statuses</option>
           {MAINTENANCE_STATUSES.map((s) => (
@@ -127,7 +127,7 @@ export default function Maintenance() {
         {canWrite && (
           <button
             onClick={() => void openForm()}
-            className="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition"
+            className="ml-auto btn-primary"
           >
             {showForm ? "Cancel" : "+ Open Log"}
           </button>
@@ -136,14 +136,14 @@ export default function Maintenance() {
 
       {/* Create form */}
       {showForm && canWrite && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">Open Maintenance Log</h3>
+        <div className="card p-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Open Maintenance Log</h3>
           <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <select
               value={formVehicleId}
               onChange={(e) => setFormVehicleId(e.target.value)}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             >
               <option value="">Select Vehicle</option>
               {vehicles.map((v) => (
@@ -157,20 +157,20 @@ export default function Maintenance() {
               value={formDescription}
               onChange={(e) => setFormDescription(e.target.value)}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <div className="flex gap-2">
               <button
                 type="submit"
                 disabled={creating}
-                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg px-5 py-2 font-medium transition"
+                className="btn-primary"
               >
                 {creating ? "Opening..." : "Open Log"}
               </button>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="text-slate-600 hover:bg-slate-100 rounded-lg px-4 py-2 transition"
+                className="btn-ghost"
               >
                 Cancel
               </button>
@@ -181,9 +181,9 @@ export default function Maintenance() {
 
       {/* Close modal */}
       {closingId && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4">
-            <h3 className="font-semibold text-slate-800 mb-4">Close Maintenance Log</h3>
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <h3 className="text-sm font-semibold text-slate-900 mb-4">Close Maintenance Log</h3>
             <p className="text-sm text-slate-500 mb-4">Enter the final cost for this maintenance work.</p>
             <input
               type="number"
@@ -192,19 +192,19 @@ export default function Maintenance() {
               onChange={(e) => setCloseCost(Number(e.target.value))}
               min={0}
               required
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+              className="w-full input mb-4"
             />
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => { setClosingId(null); setCloseCost(0); }}
-                className="text-slate-600 hover:bg-slate-100 rounded-lg px-4 py-2 transition"
+                className="btn-ghost"
               >
                 Cancel
               </button>
               <button
                 onClick={() => void handleClose()}
                 disabled={closing}
-                className="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white rounded-lg px-5 py-2 font-medium transition"
+                className="btn-success"
               >
                 {closing ? "Closing..." : "Close & Save"}
               </button>
@@ -214,11 +214,11 @@ export default function Maintenance() {
       )}
 
       {/* Maintenance list */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-6 py-3 font-medium">Vehicle</th>
                 <th className="px-6 py-3 font-medium">Description</th>
                 <th className="px-6 py-3 font-medium">Status</th>
@@ -237,7 +237,7 @@ export default function Maintenance() {
                 </tr>
               )}
               {logs.map((l) => (
-                <tr key={l.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                <tr key={l.id} className="trow">
                   <td className="px-6 py-3 font-medium text-slate-800">
                     {l.vehicle.registrationNumber}
                     <div className="text-xs text-slate-400">{l.vehicle.type}</div>
@@ -258,7 +258,7 @@ export default function Maintenance() {
                       {l.status === "OPEN" && (
                         <button
                           onClick={() => { setClosingId(l.id); setCloseCost(0); }}
-                          className="text-xs px-3 py-1 rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition"
+                          className="btn-ghost text-xs px-3 py-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-800"
                         >
                           Close
                         </button>

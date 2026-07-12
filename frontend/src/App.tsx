@@ -17,8 +17,11 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
-        <p className="text-slate-500">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex items-center gap-2 text-sm text-slate-500">
+          <span className="w-4 h-4 rounded-full border-2 border-slate-300 border-t-indigo-600 animate-spin" />
+          Loading...
+        </div>
       </div>
     );
   }

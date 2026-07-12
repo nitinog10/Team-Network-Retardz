@@ -150,7 +150,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
   return (
     <div className="space-y-6">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <p className="alert-error">
           {error}
         </p>
       )}
@@ -160,7 +160,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Statuses</option>
           {TRIP_STATUSES.map((s) => (
@@ -171,7 +171,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
         {canCreate && (
           <button
             onClick={() => void openCreate()}
-            className="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition"
+            className="ml-auto btn-primary"
           >
             {showForm ? "Cancel" : "+ New Trip"}
           </button>
@@ -180,28 +180,28 @@ export default function Trips({ driverOnly = false }: TripsProps) {
 
       {/* Create trip form */}
       {showForm && canCreate && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">Create Draft Trip</h3>
+        <div className="card p-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Create Draft Trip</h3>
           <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <input
               placeholder="Source"
               value={form.source}
               onChange={(e) => setForm({ ...form, source: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <input
               placeholder="Destination"
               value={form.destination}
               onChange={(e) => setForm({ ...form, destination: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <select
               value={form.vehicleId}
               onChange={(e) => setForm({ ...form, vehicleId: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             >
               <option value="">Select Vehicle</option>
               {availableVehicles.map((v) => (
@@ -214,7 +214,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
               value={form.driverId}
               onChange={(e) => setForm({ ...form, driverId: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             >
               <option value="">Select Driver</option>
               {availableDrivers.map((d) => (
@@ -230,7 +230,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
               onChange={(e) => setForm({ ...form, cargoWeightKg: Number(e.target.value) })}
               required
               min={1}
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <input
               type="number"
@@ -239,7 +239,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
               onChange={(e) => setForm({ ...form, plannedDistanceKm: Number(e.target.value) })}
               required
               min={1}
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <input
               type="number"
@@ -247,20 +247,20 @@ export default function Trips({ driverOnly = false }: TripsProps) {
               value={form.revenue || ""}
               onChange={(e) => setForm({ ...form, revenue: Number(e.target.value) })}
               min={0}
-              className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             />
             <div className="sm:col-span-2 lg:col-span-3 flex gap-2">
               <button
                 type="submit"
                 disabled={creating}
-                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg px-5 py-2 font-medium transition"
+                className="btn-primary"
               >
                 {creating ? "Creating..." : "Create Draft"}
               </button>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="text-slate-600 hover:bg-slate-100 rounded-lg px-4 py-2 transition"
+                className="btn-ghost"
               >
                 Cancel
               </button>
@@ -271,9 +271,9 @@ export default function Trips({ driverOnly = false }: TripsProps) {
 
       {/* Complete trip modal */}
       {completingTripId && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4">
-            <h3 className="font-semibold text-slate-800 mb-4">Complete Trip</h3>
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <h3 className="text-sm font-semibold text-slate-900 mb-4">Complete Trip</h3>
             <p className="text-sm text-slate-500 mb-4">Enter the final odometer reading to complete this trip.</p>
             <input
               type="number"
@@ -282,19 +282,19 @@ export default function Trips({ driverOnly = false }: TripsProps) {
               onChange={(e) => setFinalOdometer(Number(e.target.value))}
               min={1}
               required
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+              className="w-full input mb-4"
             />
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => { setCompletingTripId(null); setFinalOdometer(0); }}
-                className="text-slate-600 hover:bg-slate-100 rounded-lg px-4 py-2 transition"
+                className="btn-ghost"
               >
                 Cancel
               </button>
               <button
                 onClick={() => void handleComplete()}
                 disabled={completing || finalOdometer <= 0}
-                className="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white rounded-lg px-5 py-2 font-medium transition"
+                className="btn-success"
               >
                 {completing ? "Completing..." : "Complete Trip"}
               </button>
@@ -304,11 +304,11 @@ export default function Trips({ driverOnly = false }: TripsProps) {
       )}
 
       {/* Trip list */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-5 py-3 font-medium">Trip #</th>
                 <th className="px-5 py-3 font-medium">Route</th>
                 <th className="px-5 py-3 font-medium">Vehicle</th>
@@ -330,7 +330,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
                 </tr>
               )}
               {trips.map((t) => (
-                <tr key={t.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                <tr key={t.id} className="trow">
                   <td className="px-5 py-3 font-medium text-slate-800 font-mono text-xs">
                     {t.tripNumber}
                   </td>
@@ -365,7 +365,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
                       {t.status === "DRAFT" && canManage && (
                         <button
                           onClick={() => void handleDispatch(t.id)}
-                          className="text-xs px-2.5 py-1 rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 transition"
+                          className="btn-ghost text-xs px-2.5 py-1 border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                         >
                           Dispatch
                         </button>
@@ -378,7 +378,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
                               setCompletingTripId(t.id);
                               setFinalOdometer(t.vehicle.odometerKm || 0);
                             }}
-                            className="text-xs px-2.5 py-1 rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition"
+                            className="btn-ghost text-xs px-2.5 py-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-800"
                           >
                             Complete
                           </button>
@@ -387,7 +387,7 @@ export default function Trips({ driverOnly = false }: TripsProps) {
                       {(t.status === "DRAFT" || t.status === "DISPATCHED") && canManage && (
                         <button
                           onClick={() => void handleCancel(t.id)}
-                          className="text-xs px-2.5 py-1 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition"
+                          className="btn-ghost-red text-xs px-2.5 py-1"
                         >
                           Cancel
                         </button>

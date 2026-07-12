@@ -8,23 +8,25 @@ import {
 } from "recharts";
 
 const STATUS_COLORS: Record<string, string> = {
-  AVAILABLE: "#22c55e",
+  AVAILABLE: "#10b981",
   ON_TRIP: "#3b82f6",
   IN_SHOP: "#f59e0b",
-  RETIRED: "#94a3b8",
+  RETIRED: "#a1a1aa",
 };
 
 const TRIP_STATUS_COLORS: Record<string, string> = {
-  DRAFT: "#94a3b8",
+  DRAFT: "#a1a1aa",
   DISPATCHED: "#3b82f6",
-  COMPLETED: "#22c55e",
+  COMPLETED: "#10b981",
   CANCELLED: "#ef4444",
 };
 
 function formatCurrency(n: number) {
-  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
-  if (n >= 1000) return `₹${(n / 1000).toFixed(1)}K`;
-  return `₹${n.toLocaleString()}`;
+  const sign = n < 0 ? "-" : "";
+  const abs = Math.abs(n);
+  if (abs >= 100000) return `${sign}₹${(abs / 100000).toFixed(1)}L`;
+  if (abs >= 1000) return `${sign}₹${(abs / 1000).toFixed(1)}K`;
+  return `${sign}₹${abs.toLocaleString()}`;
 }
 
 export default function Dashboard() {
@@ -57,7 +59,7 @@ export default function Dashboard() {
 
   if (error || !stats) {
     return (
-      <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+      <p className="alert-error">
         {error ?? "Failed to load"}
       </p>
     );
@@ -85,11 +87,11 @@ export default function Dashboard() {
 
       {/* Revenue / Cost cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <div className="card p-5">
           <div className="text-xs text-slate-500 uppercase tracking-wide">This Month Revenue</div>
           <div className="text-2xl font-bold text-green-700 mt-1">₹{stats.monthRevenue.toLocaleString()}</div>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <div className="card p-5">
           <div className="text-xs text-slate-500 uppercase tracking-wide">This Month Costs</div>
           <div className="text-2xl font-bold text-red-600 mt-1">₹{stats.monthCost.toLocaleString()}</div>
         </div>
@@ -98,8 +100,8 @@ export default function Dashboard() {
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fleet Status Donut */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 className="font-semibold text-slate-700 mb-4">Fleet Status</h3>
+        <div className="card p-5">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Fleet Status</h3>
           {fleetPieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
@@ -109,14 +111,15 @@ export default function Dashboard() {
                   cy="50%"
                   innerRadius={60}
                   outerRadius={100}
+                  paddingAngle={2}
                   dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}`}
                 >
                   {fleetPieData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip />
+                <Legend iconType="circle" iconSize={8} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
@@ -125,17 +128,17 @@ export default function Dashboard() {
         </div>
 
         {/* Monthly Cost vs Revenue */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 className="font-semibold text-slate-700 mb-4">Monthly Cost vs Revenue</h3>
+        <div className="card p-5">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Monthly Cost vs Revenue</h3>
           {monthly.length > 0 ? (
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={monthly}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                 <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => formatCurrency(v as number)} />
                 <Tooltip formatter={(v) => `₹${Number(v).toLocaleString()}`} />
                 <Legend />
-                <Bar dataKey="revenue" name="Revenue" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" name="Revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="cost" name="Cost" fill="#ef4444" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -147,24 +150,24 @@ export default function Dashboard() {
 
       {/* CSV Export buttons */}
       {canExport && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 className="font-semibold text-slate-700 mb-3">Export Reports (CSV)</h3>
+        <div className="card p-5">
+          <h3 className="text-sm font-semibold text-slate-900 mb-3">Export Reports (CSV)</h3>
           <div className="flex flex-wrap gap-3">
             <a
               href="/api/dashboard/export/trips"
-              className="inline-flex items-center px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm font-medium transition"
+              className="btn-secondary"
             >
               ↓ Trips Report
             </a>
             <a
               href="/api/dashboard/export/vehicle-costs"
-              className="inline-flex items-center px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm font-medium transition"
+              className="btn-secondary"
             >
               ↓ Vehicle Costs
             </a>
             <a
               href="/api/dashboard/export/fuel-efficiency"
-              className="inline-flex items-center px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-sm font-medium transition"
+              className="btn-secondary"
             >
               ↓ Fuel Efficiency
             </a>
@@ -173,14 +176,14 @@ export default function Dashboard() {
       )}
 
       {/* Recent Trips Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-200">
-          <h3 className="font-semibold text-slate-700">Recent Trips</h3>
+          <h3 className="text-sm font-semibold text-slate-900">Recent Trips</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-6 py-3 font-medium">Trip #</th>
                 <th className="px-6 py-3 font-medium">Route</th>
                 <th className="px-6 py-3 font-medium">Vehicle</th>
@@ -196,7 +199,7 @@ export default function Dashboard() {
                 </tr>
               )}
               {stats.recentTrips.map((t) => (
-                <tr key={t.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                <tr key={t.id} className="trow">
                   <td className="px-6 py-3 font-mono text-xs font-medium">{t.tripNumber}</td>
                   <td className="px-6 py-3 text-slate-600 text-xs">{t.source} → {t.destination}</td>
                   <td className="px-6 py-3 text-slate-600 text-xs">{t.vehicle.registrationNumber}</td>
@@ -206,8 +209,8 @@ export default function Dashboard() {
                     <span
                       className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium"
                       style={{
-                        backgroundColor: (TRIP_STATUS_COLORS[t.status] ?? "#94a3b8") + "20",
-                        color: TRIP_STATUS_COLORS[t.status] ?? "#94a3b8",
+                        backgroundColor: (TRIP_STATUS_COLORS[t.status] ?? "#a1a1aa") + "20",
+                        color: TRIP_STATUS_COLORS[t.status] ?? "#a1a1aa",
                       }}
                     >
                       {t.status}
@@ -224,18 +227,21 @@ export default function Dashboard() {
 }
 
 function KpiCard({ label, value, color }: { label: string; value: string | number; color: string }) {
-  const colorMap: Record<string, string> = {
-    indigo: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    blue: "bg-blue-50 text-blue-700 border-blue-200",
-    teal: "bg-teal-50 text-teal-700 border-teal-200",
-    green: "bg-green-50 text-green-700 border-green-200",
-    amber: "bg-amber-50 text-amber-700 border-amber-200",
-    red: "bg-red-50 text-red-700 border-red-200",
+  const dotMap: Record<string, string> = {
+    indigo: "bg-indigo-500",
+    blue: "bg-blue-500",
+    teal: "bg-teal-500",
+    green: "bg-emerald-500",
+    amber: "bg-amber-500",
+    red: "bg-red-500",
   };
   return (
-    <div className={`rounded-2xl border p-4 ${colorMap[color] ?? colorMap.indigo}`}>
-      <div className="text-xs uppercase tracking-wide opacity-70">{label}</div>
-      <div className="text-2xl font-bold mt-1">{value}</div>
+    <div className="card p-4">
+      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+        <span className={`w-1.5 h-1.5 rounded-full ${dotMap[color] ?? dotMap.indigo}`} />
+        {label}
+      </div>
+      <div className="text-2xl font-semibold tracking-tight text-slate-900 mt-1.5">{value}</div>
     </div>
   );
 }

@@ -37,15 +37,15 @@ export default function FuelExpenses() {
   return (
     <div className="space-y-6">
       {/* Tab bar */}
-      <div className="flex gap-1 bg-white rounded-xl p-1 shadow-sm border border-slate-200 w-fit">
+      <div className="inline-flex gap-0.5 bg-slate-100 rounded-lg p-1 border border-slate-200/60">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`px-3.5 py-1.5 rounded-md text-[13px] font-medium transition cursor-pointer ${
               tab === t.key
-                ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
+                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+                : "text-slate-500 hover:text-slate-900 border border-transparent"
             }`}
           >
             {t.label}
@@ -121,14 +121,14 @@ function FuelTab({ canWrite }: { canWrite: boolean }) {
   return (
     <div className="space-y-4">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>
+        <p className="alert-error">{error}</p>
       )}
 
       {canWrite && (
         <div className="flex justify-end">
           <button
             onClick={() => void openForm()}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition"
+            className="btn-primary"
           >
             {showForm ? "Cancel" : "+ Add Fuel Log"}
           </button>
@@ -136,35 +136,35 @@ function FuelTab({ canWrite }: { canWrite: boolean }) {
       )}
 
       {showForm && canWrite && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">Add Fuel Log</h3>
+        <div className="card p-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Add Fuel Log</h3>
           <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <select
               value={form.vehicleId}
               onChange={(e) => setForm({ ...form, vehicleId: e.target.value })}
               required
-              className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input"
             >
               <option value="">Vehicle</option>
               {vehicles.map((v) => (
                 <option key={v.id} value={v.id}>{v.registrationNumber}</option>
               ))}
             </select>
-            <input type="number" placeholder="Litres" value={form.litres || ""} onChange={(e) => setForm({ ...form, litres: Number(e.target.value) })} required min={0.1} step="0.01" className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
-            <input type="number" placeholder="Cost (₹)" value={form.cost || ""} onChange={(e) => setForm({ ...form, cost: Number(e.target.value) })} required min={0} className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
-            <input type="number" placeholder="Odometer (km)" value={form.odometerKm || ""} onChange={(e) => setForm({ ...form, odometerKm: Number(e.target.value) })} required min={0} className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
-            <button type="submit" disabled={creating} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg px-4 py-2 font-medium transition">
+            <input type="number" placeholder="Litres" value={form.litres || ""} onChange={(e) => setForm({ ...form, litres: Number(e.target.value) })} required min={0.1} step="0.01" className="input" />
+            <input type="number" placeholder="Cost (₹)" value={form.cost || ""} onChange={(e) => setForm({ ...form, cost: Number(e.target.value) })} required min={0} className="input" />
+            <input type="number" placeholder="Odometer (km)" value={form.odometerKm || ""} onChange={(e) => setForm({ ...form, odometerKm: Number(e.target.value) })} required min={0} className="input" />
+            <button type="submit" disabled={creating} className="btn-primary">
               {creating ? "Adding..." : "Add"}
             </button>
           </form>
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-6 py-3 font-medium">Vehicle</th>
                 <th className="px-6 py-3 font-medium">Trip</th>
                 <th className="px-6 py-3 font-medium">Litres</th>
@@ -178,7 +178,7 @@ function FuelTab({ canWrite }: { canWrite: boolean }) {
                 <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">No fuel logs</td></tr>
               )}
               {logs.map((l) => (
-                <tr key={l.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                <tr key={l.id} className="trow">
                   <td className="px-6 py-3 font-medium text-slate-800">{l.vehicle.registrationNumber}</td>
                   <td className="px-6 py-3 text-slate-600 text-xs">{l.trip?.tripNumber ?? "—"}</td>
                   <td className="px-6 py-3 text-slate-600">{Number(l.litres).toFixed(1)} L</td>
@@ -261,14 +261,14 @@ function ExpenseTab({ canWrite }: { canWrite: boolean }) {
   return (
     <div className="space-y-4">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>
+        <p className="alert-error">{error}</p>
       )}
 
       <div className="flex flex-wrap items-center gap-3">
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          className="input"
         >
           <option value="">All Categories</option>
           {EXPENSE_CATEGORIES.map((c) => (
@@ -279,7 +279,7 @@ function ExpenseTab({ canWrite }: { canWrite: boolean }) {
         {canWrite && (
           <button
             onClick={() => void openForm()}
-            className="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition"
+            className="ml-auto btn-primary"
           >
             {showForm ? "Cancel" : "+ Add Expense"}
           </button>
@@ -287,34 +287,34 @@ function ExpenseTab({ canWrite }: { canWrite: boolean }) {
       </div>
 
       {showForm && canWrite && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">Add Expense</h3>
+        <div className="card p-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Add Expense</h3>
           <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500">
+            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="input">
               {EXPENSE_CATEGORIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
-            <input type="number" placeholder="Amount (₹)" value={form.amount || ""} onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })} required min={0.01} step="0.01" className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
-            <select value={form.vehicleId} onChange={(e) => setForm({ ...form, vehicleId: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="number" placeholder="Amount (₹)" value={form.amount || ""} onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })} required min={0.01} step="0.01" className="input" />
+            <select value={form.vehicleId} onChange={(e) => setForm({ ...form, vehicleId: e.target.value })} className="input">
               <option value="">Vehicle (optional)</option>
               {vehicles.map((v) => (
                 <option key={v.id} value={v.id}>{v.registrationNumber}</option>
               ))}
             </select>
-            <input placeholder="Notes (optional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
-            <button type="submit" disabled={creating} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg px-4 py-2 font-medium transition">
+            <input placeholder="Notes (optional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="input" />
+            <button type="submit" disabled={creating} className="btn-primary">
               {creating ? "Adding..." : "Add"}
             </button>
           </form>
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+              <tr className="thead-row">
                 <th className="px-6 py-3 font-medium">Category</th>
                 <th className="px-6 py-3 font-medium">Amount</th>
                 <th className="px-6 py-3 font-medium">Vehicle</th>
@@ -328,7 +328,7 @@ function ExpenseTab({ canWrite }: { canWrite: boolean }) {
                 <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">No expenses</td></tr>
               )}
               {expenses.map((e) => (
-                <tr key={e.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+                <tr key={e.id} className="trow">
                   <td className="px-6 py-3">
                     <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${categoryColors[e.category] ?? "bg-slate-100 text-slate-600"}`}>
                       {e.category}
@@ -366,11 +366,11 @@ function EfficiencyTab() {
   if (loading) return <p className="text-slate-500">Loading...</p>;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="card overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+            <tr className="thead-row">
               <th className="px-6 py-3 font-medium">Vehicle</th>
               <th className="px-6 py-3 font-medium">Type</th>
               <th className="px-6 py-3 font-medium">Total Litres</th>
@@ -383,7 +383,7 @@ function EfficiencyTab() {
               <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">No data</td></tr>
             )}
             {data.map((d) => (
-              <tr key={d.vehicleId} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+              <tr key={d.vehicleId} className="trow">
                 <td className="px-6 py-3 font-medium text-slate-800">{d.registrationNumber}</td>
                 <td className="px-6 py-3 text-slate-600">{d.type}</td>
                 <td className="px-6 py-3 text-slate-600">{d.totalLitres.toLocaleString()} L</td>
@@ -423,11 +423,11 @@ function VehicleCostsTab() {
   if (loading) return <p className="text-slate-500">Loading...</p>;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="card overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+            <tr className="thead-row">
               <th className="px-6 py-3 font-medium">Vehicle</th>
               <th className="px-6 py-3 font-medium">Type</th>
               <th className="px-6 py-3 font-medium">Maintenance</th>
@@ -441,7 +441,7 @@ function VehicleCostsTab() {
               <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-400">No data</td></tr>
             )}
             {data.map((d) => (
-              <tr key={d.vehicleId} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+              <tr key={d.vehicleId} className="trow">
                 <td className="px-6 py-3 font-medium text-slate-800">{d.registrationNumber}</td>
                 <td className="px-6 py-3 text-slate-600">{d.type}</td>
                 <td className="px-6 py-3 text-slate-600">₹{d.maintenanceCost.toLocaleString()}</td>
@@ -474,11 +474,11 @@ function TripCostsTab() {
   if (loading) return <p className="text-slate-500">Loading...</p>;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="card overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
+            <tr className="thead-row">
               <th className="px-5 py-3 font-medium">Trip</th>
               <th className="px-5 py-3 font-medium">Route</th>
               <th className="px-5 py-3 font-medium">Status</th>
@@ -494,7 +494,7 @@ function TripCostsTab() {
               <tr><td colSpan={8} className="px-5 py-8 text-center text-slate-400">No data</td></tr>
             )}
             {data.map((d) => (
-              <tr key={d.tripId} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
+              <tr key={d.tripId} className="trow">
                 <td className="px-5 py-3 font-mono text-xs font-medium text-slate-800">{d.tripNumber}</td>
                 <td className="px-5 py-3 text-slate-600 text-xs">{d.source} → {d.destination}</td>
                 <td className="px-5 py-3">
