@@ -758,20 +758,3 @@ cd frontend && npm run build        # Production build
 ## 👥 Team
 
 **Team Network Retardz** — Odoo Hackathon 2026
-
-| Member | Role |
-|---|---|
-| **Nitin Mishra** | Team Lead |
-| **Siya** | Full-Stack Developer |
-
----
-
-## 📄 Licence
-
-This project was built for the **Odoo Hackathon 2026** and is intended for demonstration purposes.
-
----
-
-<p align="center">
-  <sub>Built with ❤️ for the Odoo Hackathon 2026</sub>
-</p>
